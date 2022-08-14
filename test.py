@@ -18,3 +18,4 @@ context = [[0,0,0,0,2,0,0,0,1,1,1,1,0,0,2],
 print("",interpret.is_at_win_state(context))
 
 print("", search.search(3, chessboard.store_chess))
+
