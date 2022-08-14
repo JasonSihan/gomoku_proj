@@ -3,10 +3,13 @@ from tkinter import *
 import interpret
 import search
 import math
+import opening
 
 PIECE_SIZE = 10
 piece_color = "black"
 win_color = "black"
+white_step_count = 0
+
 '''Store the location that the pieces have been put, 15*15 matrix'''
 # TODO: store_chess = [[0]*15]*15: initiation in this way will let store_chess[x][x] = 1 change x cols in all rows be 1
 store_chess = [[0 for i in range(15)] for j in range(15)]
@@ -56,7 +59,7 @@ for i in range(15):
     board.create_line(32, (42 * i + 38), 622, (42 * i + 38))
     # Horizontal Line
     board.create_line((42 * i + 32), 38, (42 * i + 32), 628)
-#point
+#Star points
 point_x = [3, 3, 11, 11, 7]
 point_y = [3, 11, 3, 11, 7]
 for i in range(5):
@@ -109,7 +112,18 @@ board.bind("<Button-1>", click_cor)
 
 '''Find the closest intersection of lines'''
 def ChessPos():
-    global click_x, click_y, person_flag, pieces_x, pieces_y, intersection, piece_color, store_chess
+    global click_x, click_y, person_flag, pieces_x, pieces_y, intersection, piece_color, store_chess, white_step_count
+    # if white_step_count <= 5 and piece_color == "white":
+    #     open = opening.opening_move(store_chess)
+    #     print("", open)
+    #     putPiece(piece_color, open[1]*42+32, open[2]*42+38)
+    #     return
+    if piece_color == "white":        
+        check = search.search(1, store_chess)
+        print("", check)
+        putPiece(piece_color, check[1]*42 + 32, check[2]* 42 + 38)
+        return
+    
     min_dist = 255
     chess_x = -1
     chess_y = -1
@@ -121,18 +135,13 @@ def ChessPos():
             min_dist = dist
             chess_x = intersection[i][0]
             chess_y = intersection[i][1]
-    #TODO
-    '''Try depth = 3 in search.py, then less/more depths'''        
-    #check = search.search(3, store_chess)
-    # print("", check)
-    # print(f"chess_x = {chess_x}, chess_y = {chess_y}")
+    print(f"chess_x = {chess_x}, chess_y = {chess_y}")         
     putPiece(piece_color, chess_x, chess_y)
 
 
 '''Draw piece after find the chess position'''
 def putPiece(piece_color, chess_x, chess_y):
-    global store_chess, person_flag, board
-    board.create_oval(chess_x - PIECE_SIZE, chess_y - PIECE_SIZE, chess_x + PIECE_SIZE, chess_y + PIECE_SIZE, fill = piece_color, tags = ("piece"))
+    global store_chess, person_flag, board, white_step_count
     cols_float = (chess_x - 32)/42
     rows_float = (chess_y - 38)/42
     # print(f"rows_float = {rows_float}, cols_float = {cols_float}")
@@ -140,18 +149,20 @@ def putPiece(piece_color, chess_x, chess_y):
     cols = math.ceil(cols_float)
     print(f"rows = {rows}, cols = {cols}")
     if store_chess[rows][cols] == 0:
+        board.create_oval(chess_x - PIECE_SIZE, chess_y - PIECE_SIZE, chess_x + PIECE_SIZE, chess_y + PIECE_SIZE, fill = piece_color, tags = ("piece"))
         if piece_color == "white":
             store_chess[rows][cols] = 2
             ChangeTurn("black")
-            print("white")
+            white_step_count = white_step_count + 1
+            # print("white")
         elif piece_color == "black":
             store_chess[rows][cols] = 1
             ChangeTurn("white")
-            print("black")
+            # print("black")
         print()
         for some in store_chess:
             print("",some)
-        print()        
+        print()       
     #print(store_chess) #check correction of position
     #TODO Add the judge of game position: win to end/continues?
     # Check Game Position each turn
@@ -182,7 +193,7 @@ def ChangeTurn(color):
 
 '''Define reset button'''
 def gameReset():
-    global store_chess, piece_color, person_flag, intersection, board
+    global store_chess, piece_color, person_flag, intersection, board,step_count
     var.set("Holding Black")      
     win_message.set("")
     end_message.set("")         
@@ -192,6 +203,7 @@ def gameReset():
     piece_color = "black"
     person_flag = 0
     board.bind("<Button-1>", click_cor)
+    step_count = 0
 
 '''Label of Who is the winner'''
 win_message = tk.StringVar()
