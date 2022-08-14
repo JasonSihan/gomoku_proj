@@ -9,7 +9,7 @@ def opening_move(current):
         return [114514,7,7]
     # If not first move
     else:
-        return search.search(current)
+        return search.search(1,current)
 # 
 def check_state(current):
     is_null = True

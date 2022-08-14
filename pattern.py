@@ -150,7 +150,7 @@ def resolve_pattern_cont_rev(pattern):
                 final_score += compute.JUMP_FOUR
                 jumps[1] += 1
             elif match == BLOCKED_FOUR_D2_REV:
-                final_score += compute.BLOCKED_FOUR_D2
+                final_score += compute.BLOCKED_FOUR
             elif match == JUMP_THREE_D1_REV or match == JUMP_THREE_D2_REV:
                 final_score += compute.JUMP_THREE
                 jumps[2] += 1

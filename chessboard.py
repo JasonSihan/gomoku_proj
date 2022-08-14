@@ -113,14 +113,15 @@ board.bind("<Button-1>", click_cor)
 '''Find the closest intersection of lines'''
 def ChessPos():
     global click_x, click_y, person_flag, pieces_x, pieces_y, intersection, piece_color, store_chess, white_step_count
-    # if white_step_count <= 5 and piece_color == "white":
-    #     open = opening.opening_move(store_chess)
-    #     print("", open)
-    #     putPiece(piece_color, open[1]*42+32, open[2]*42+38)
-    #     return
+    if white_step_count <= 1 and piece_color == "white":
+        open = opening.opening_move(store_chess)
+        # print("", open)
+        print(f"chess_x = {open[1]*42+32}, chess_y = {open[2]*42+38}")
+        putPiece(piece_color, open[1]*42+32, open[2]*42+38)
+        return
     if piece_color == "white":        
         check = search.search(1, store_chess)
-        print("", check)
+        # print("", check)
         putPiece(piece_color, check[1]*42 + 32, check[2]* 42 + 38)
         return
     
@@ -159,10 +160,10 @@ def putPiece(piece_color, chess_x, chess_y):
             store_chess[rows][cols] = 1
             ChangeTurn("white")
             # print("black")
-        print()
-        for some in store_chess:
-            print("",some)
-        print()       
+        # print()
+        # for some in store_chess:
+        #     print("",some)
+        # print()       
     #print(store_chess) #check correction of position
     #TODO Add the judge of game position: win to end/continues?
     # Check Game Position each turn
